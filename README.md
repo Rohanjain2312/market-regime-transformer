@@ -133,4 +133,8 @@ python -m src.eval --ckpt outputs/best.pt --tickers ^GSPC ^VIX ^IXIC GLD --start
 
 Artifacts are saved to outputs/ (checkpoints, metrics).
 
+Visualize
+
+python -m src.visualize
+
 ---
