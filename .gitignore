@@ -1,0 +1,21 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data artifacts
+/data/raw/
+/data/processed/
+/results/models/
+/results/figures/
+
+# OS files
+.DS_Store
