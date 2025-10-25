@@ -1,0 +1,8 @@
+numpy>=1.26
+pandas>=2.2
+yfinance>=0.2
+scikit-learn>=1.5
+torch>=2.2
+torchmetrics>=1.4
+tqdm>=4.66
+matplotlib>=3.9

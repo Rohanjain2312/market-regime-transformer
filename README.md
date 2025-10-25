@@ -115,3 +115,22 @@ This section will be updated once the first version of the codebase is ready.
 ## 10. License
 
 This project will be open-sourced under the MIT License once implementation begins.
+
+
+## Setup
+```bash
+pip install -r requirements.txt
+
+Train
+
+python -m src.train --tickers ^GSPC ^VIX ^IXIC GLD --start 2000-01-01 --val-start 2016-01-01 --test-start 2020-01-01 \
+  --window 60 --horizon 1 --bull 0.015 --bear -0.015 --epochs 20 --batch-size 128 --d-model 256 --nhead 4 --layers 3
+
+Evaluate
+
+python -m src.eval --ckpt outputs/best.pt --tickers ^GSPC ^VIX ^IXIC GLD --start 2000-01-01 --val-start 2016-01-01 \
+  --test-start 2020-01-01 --window 60 --horizon 1 --bull 0.015 --bear -0.015
+
+Artifacts are saved to outputs/ (checkpoints, metrics).
+
+---
