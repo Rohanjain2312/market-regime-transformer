@@ -1,2 +1,9 @@
-pandas>=2.0
-torch>=2.0
+yfinance
+fredapi
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+torch
+hmmlearn

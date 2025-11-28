@@ -1,0 +1,36 @@
+data:
+  source_symbols: ["^GSPC", "SPY", "^IXIC"]
+  lookback_window: 60
+  train_start: "2005-01-01"
+  validation_start: "2018-01-01"
+  test_start: "2021-01-01"
+  fred_series:
+    VIX: VIXCLS
+    FEDFUNDS: FEDFUNDS
+    DGS10: DGS10
+    CPI: CPIAUCSL
+    INDPRO: INDPRO
+    UNRATE: UNRATE
+
+model:
+  d_model: 256
+  n_heads: 8
+  num_encoder_layers: 4
+  dropout: 0.1
+  num_regimes: 3
+
+train:
+  batch_size: 128
+  max_epochs: 60
+  learning_rate: 3.0e-4
+  weight_decay: 1.0e-4
+  regression_loss_weight: 0.5
+  classification_loss_weight: 0.5
+  correlation_loss_weight: 0.1
+  device: cuda
+  num_workers: 8
+  amp: true
+  grad_accum_steps: 1
+  early_stopping_patience: 8
+  warmup_epochs: 5
+  cosine_anneal: true

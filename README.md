@@ -28,6 +28,19 @@ Financial markets shift between regimes with different volatility structures and
 
 ---
 
+## 2.1 Design Decisions (Expert Defaults)
+
+- Universe: `^GSPC` (target), `SPY`, `^IXIC` as covariates.
+- Macros (FRED): `VIXCLS`, `FEDFUNDS`, `DGS10`, `CPIAUCSL`, `INDPRO`, `UNRATE`.
+- Features: multi-scale momentum/volatility for each `close_*`, plus target log returns, RSI, SMA, and volatility.
+- Labeling: 3-state HMM on returns+vol with majority smoothing (window=5); threshold labeler also available.
+- Model: Transformer encoder with FiLM modulation and head gating; dual heads for regression and classification.
+- Loss: MSE (or Quantile) + Cross-Entropy + optional correlation loss.
+- Training: AMP, cosine LR with warmup, early stopping, grad clipping; DDP-ready for H100.
+- Evaluation: RMSE/MAE/Directional, Acc/F1, Sharpe, MaxDD; simple backtest with 1bp cost.
+
+---
+
 ## 3. Planned Data Sources
 
 We plan to use publicly available datasets from:
@@ -108,7 +121,51 @@ market-regime-transformer/
 
 ## 9. Getting Started (Coming Soon)
 
-This section will be updated once the first version of the codebase is ready.
+Quickstart for the first end-to-end baseline is now available.
+
+1) Install dependencies
+
+- Create and activate a Python 3.10+ env
+- `pip install -r requirements.txt`
+
+2) Prepare data (uses cached CSVs if available; otherwise downloads via yfinance)
+
+- `python scripts/prepare_data.py`
+
+3) Train MRST baseline
+
+- `python scripts/train_mrst.py --labeling threshold --out results/experiments/mrst_threshold`
+- Optional HMM labeling (requires `hmmlearn`):
+  `python scripts/train_mrst.py --labeling hmm --out results/experiments/mrst_hmm`
+ - Optional YAML config: `python scripts/train_mrst.py --config configs/mrst_default.yaml`
+
+4) Results
+
+- Check `results/experiments/.../history.json` and `results.json`
+- Use plotting helpers in `src/visualization/plots.py`
+
+5) Evaluate and backtest
+
+- `python scripts/evaluate.py` (reads last run config and model from `results/experiments/mrst_threshold` by default)
+
+6) Zaratan (H100) Slurm template
+
+- Edit `scripts/slurm/train_mrst.slurm` to match your account/partition/modules
+- Submit: `sbatch scripts/slurm/train_mrst.slurm`
+
+Multi-GPU DDP (single node):
+
+- Submit: `sbatch scripts/slurm/train_mrst_ddp.slurm`
+- Uses `torchrun` and automatically enables DDP + AMP.
+
+Walk-forward (rolling) training:
+
+- `python scripts/train_walkforward.py`
+- Saves per-fold results under `results/experiments/walkforward/` and a `summary.json`.
+
+FRED API key (optional macros):
+
+- Export: `export FRED_API_KEY=your_key_here` to fetch and cache macro series; otherwise, the pipeline runs with market data only.
 
 ---
 
